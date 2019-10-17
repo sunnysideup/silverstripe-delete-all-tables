@@ -1,0 +1,39 @@
+{
+    "name": "sunnysideup/delete-all-tables",
+    "description": "Silverstripe module to delete all tables - CAREFUL!",
+    "type": "silverstripe-vendormodule",
+    "keywords": [
+        "Silverstripe-CMS",
+        "CMS",
+        "Silverstripe",
+        "database",
+        "delete",
+        "clean",
+        "restart",
+        "drop",
+        "drop table"
+    ],
+    "require": {
+        "silverstripe/framework": "~4@stable"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Nicolaas Francken",
+            "email": "modules@sunnysideup.co.nz",
+            "role": "lead developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Sunnysideup\\DeleteAllTables\\": "src/"
+        }
+    },
+    "extra": {
+        "expose": [
+            "client/dist/",
+        ],
+    }
+}
