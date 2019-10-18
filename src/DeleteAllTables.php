@@ -14,9 +14,9 @@ class DeleteAllTablesTask extends BuildTask
     public function run($request)
     {
         $rows = DB::query('SHOW TABLES;');
-        foreach($rows to $row) {
+        foreach($rows as $row) {
             $table = $row['table'];
-            DB::query('DROP TABLE IF EXISTS '.$table.';');
+            DB::query('DROP TABLE IF EXISTS "'.$table.'";');
         }
     }
 }
