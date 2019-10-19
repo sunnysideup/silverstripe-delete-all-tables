@@ -33,7 +33,7 @@
     },
     "extra": {
         "expose": [
-            "client/dist/",
+            "client/dist/"
         ],
     }
 }
