@@ -15,8 +15,20 @@ class DeleteAllTablesTask extends BuildTask
     {
         $rows = DB::query('SHOW TABLES;');
         foreach($rows as $row) {
-            $table = $row['table'];
-            DB::query('DROP TABLE IF EXISTS "'.$table.'";');
+            if($row) {
+                if(is_array($row)) {
+                    foreach($row as $db => $table) {
+                        FlushNow::do_flush('DELETING '.$table);
+                        DB::query('DROP TABLE IF EXISTS "'.$table.'";');
+                    }
+                } else {
+                    $table = $row['table'] ?? '';
+                    if($table) {
+                        FlushNow::do_flush('DELETING '.$table);
+                        DB::query('DROP TABLE IF EXISTS "'.$table.'";');                        
+                    }
+                }
+            }
         }
     }
 }
