@@ -32,8 +32,6 @@
         }
     },
     "extra": {
-        "expose": [
-            "client/dist/"
-        ]
+
     }
 }
