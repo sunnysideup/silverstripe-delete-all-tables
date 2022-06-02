@@ -38,7 +38,7 @@ class DeleteAllVersionedData extends BuildTask
 
     private function truncateTable(string $table)
     {
-        if(substr($table, -1 * strlen('_Versions')) !== '_Versions') {
+        if(substr($table, -1 * strlen('_Versions')) === '_Versions') {
             FlushNow::do_flush('TRUNCATING '.$table);
             DB::query('TRUNCATE TABLE "'.$table.'";');
         }
