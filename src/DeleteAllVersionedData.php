@@ -32,8 +32,10 @@ class DeleteAllVersionedData extends BuildTask
                 }
             }
         }
-        $this->truncateTable('ChangeSet');
-        $this->truncateTable('ChangeSetItem');
+        FlushNow::do_flush('TRUNCATING ChangeSet');
+        DB::query('TRUNCATE TABLE "ChangeSet";');
+        FlushNow::do_flush('TRUNCATING ChangeSetItem');
+        DB::query('TRUNCATE TABLE "ChangeSetItem";');
     }
 
     private function truncateTable(string $table)
