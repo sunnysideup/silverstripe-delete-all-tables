@@ -2,9 +2,9 @@
 
 namespace Sunnysideup\DeleteAllTables;
 
-use SilverStripe\ORM\DB;
-use SilverStripe\Dev\BuildTask;
 use SilverStripe\Control\Director;
+use SilverStripe\Dev\BuildTask;
+use SilverStripe\ORM\DB;
 use Sunnysideup\Flush\FlushNow;
 
 class DeleteAllTablesTask extends BuildTask
@@ -15,17 +15,17 @@ class DeleteAllTablesTask extends BuildTask
 
     public function run($request)
     {
-        if(Director::isDev() ) {
+        if (Director::isDev()) {
             $rows = DB::query('SHOW TABLES;');
-            foreach($rows as $row) {
-                if($row) {
-                    if(is_array($row)) {
-                        foreach($row as $db => $table) {
+            foreach ($rows as $row) {
+                if ($row) {
+                    if (is_array($row)) {
+                        foreach ($row as $db => $table) {
                             $this->deleteTable($table);
                         }
                     } else {
                         $table = $row['table'] ?? '';
-                        if($table) {
+                        if ($table) {
                             $this->deleteTable($table);
                         }
                     }
@@ -36,7 +36,7 @@ class DeleteAllTablesTask extends BuildTask
 
     private function deleteTable(string $table)
     {
-        FlushNow::do_flush('DELETING '.$table);
-        DB::query('DROP TABLE IF EXISTS "'.$table.'";');
+        FlushNow::do_flush('DELETING ' . $table);
+        DB::query('DROP TABLE IF EXISTS "' . $table . '";');
     }
 }
