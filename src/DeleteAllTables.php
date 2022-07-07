@@ -15,7 +15,7 @@ class DeleteAllTablesTask extends BuildTask
 
     public function run($request)
     {
-        if (Director::isDev()) {
+        if (Director::isDev()  || Director::isCli()) {
             $rows = DB::query('SHOW TABLES;');
             foreach ($rows as $row) {
                 if ($row) {
