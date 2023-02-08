@@ -6,6 +6,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
 use Sunnysideup\Flush\FlushNow;
+use Sunnysideup\Flush\FlushNowImplementor;
 
 class DeleteAllTablesTask extends BuildTask
 {
@@ -36,7 +37,7 @@ class DeleteAllTablesTask extends BuildTask
 
     private function deleteTable(string $table)
     {
-        FlushNow::do_flush('DELETING ' . $table);
+        FlushNowImplementor::do_flush('DELETING ' . $table);
         DB::query('DROP TABLE IF EXISTS "' . $table . '";');
     }
 }

@@ -6,6 +6,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
 use Sunnysideup\Flush\FlushNow;
+use Sunnysideup\Flush\FlushNowImplementor;
 
 class DeleteAllVersionedData extends BuildTask
 {
@@ -33,16 +34,16 @@ class DeleteAllVersionedData extends BuildTask
             }
         }
 
-        FlushNow::do_flush('TRUNCATING ChangeSet');
+        FlushNowImplementor::do_flush('TRUNCATING ChangeSet');
         DB::query('TRUNCATE TABLE "ChangeSet";');
-        FlushNow::do_flush('TRUNCATING ChangeSetItem');
+        FlushNowImplementor::do_flush('TRUNCATING ChangeSetItem');
         DB::query('TRUNCATE TABLE "ChangeSetItem";');
     }
 
     private function truncateTable(string $table)
     {
         if ('_Versions' === substr((string) $table, -1 * strlen('_Versions'))) {
-            FlushNow::do_flush('TRUNCATING ' . $table);
+            FlushNowImplementor::do_flush('TRUNCATING ' . $table);
             DB::query('TRUNCATE TABLE "' . $table . '";');
         }
     }
