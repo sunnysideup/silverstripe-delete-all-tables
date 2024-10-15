@@ -16,7 +16,7 @@ class DeleteAllVersionedData extends BuildTask
 
     public function run($request)
     {
-        if (Director::isDev()) {
+        if (!Director::isLive()) {
             $rows = DB::query('SHOW TABLES;');
             foreach ($rows as $row) {
                 if ($row) {
