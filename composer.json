@@ -11,6 +11,9 @@
         "clean",
         "restart",
         "drop",
+        "version management",
+        "versions",
+        "obsolete",
         "drop table"
     ],
     "require": {
