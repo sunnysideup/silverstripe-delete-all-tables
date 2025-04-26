@@ -37,7 +37,7 @@ class DeleteAllVersionedData extends BuildTask
             FlushNowImplementor::do_flush('TRUNCATING ChangeSetItem');
             DB::query('TRUNCATE TABLE "ChangeSetItem";');
         } else {
-            FlushNowImplementor::do_flush('You need to set the environment to DEV to run this task.');
+            FlushNowImplementor::do_flush('You need to set the environment to TEST or DEV to run this task.');
         }
     }
 
