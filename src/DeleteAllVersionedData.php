@@ -12,7 +12,7 @@ class DeleteAllVersionedData extends BuildTask
 {
     protected $title = 'CAREFUL: delete all versioned data';
 
-    protected $description = 'Delete versioned data.!';
+    protected $description = 'Delete versioned data!';
 
     public function run($request)
     {
