@@ -21,7 +21,7 @@ class DeleteAllTablesTask extends BuildTask
             foreach ($rows as $row) {
                 if ($row) {
                     if (is_array($row)) {
-                        foreach ($row as $db => $table) {
+                        foreach ($row as $table) {
                             $this->deleteTable($table);
                         }
                     } else {
