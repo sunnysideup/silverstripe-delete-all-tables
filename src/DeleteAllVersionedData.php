@@ -5,7 +5,6 @@ namespace Sunnysideup\DeleteAllTables;
 use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
-use Sunnysideup\Flush\FlushNow;
 use Sunnysideup\Flush\FlushNowImplementor;
 
 class DeleteAllVersionedData extends BuildTask
@@ -16,7 +15,7 @@ class DeleteAllVersionedData extends BuildTask
 
     public function run($request)
     {
-        if (!Director::isLive()) {
+        if (! Director::isLive()) {
             $rows = DB::query('SHOW TABLES;');
             foreach ($rows as $row) {
                 if ($row) {
@@ -40,7 +39,6 @@ class DeleteAllVersionedData extends BuildTask
             FlushNowImplementor::do_flush('You need to set the environment to TEST or DEV to run this task.');
         }
     }
-
 
     private function truncateTable(string $table)
     {

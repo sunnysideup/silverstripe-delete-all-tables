@@ -5,7 +5,6 @@ namespace Sunnysideup\DeleteAllTables;
 use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
-use Sunnysideup\Flush\FlushNow;
 use Sunnysideup\Flush\FlushNowImplementor;
 
 class DeleteAllTablesTask extends BuildTask
