@@ -5,15 +5,20 @@ namespace Sunnysideup\DeleteAllTables;
 use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
+use SilverStripe\PolyExecution\PolyOutput;
 use Sunnysideup\Flush\FlushNowImplementor;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 
 class DeleteAllVersionedData extends BuildTask
 {
-    protected $title = 'CAREFUL: delete all versioned data';
+    protected static string $commandName = 'delete-all-versioned-data';
 
-    protected $description = 'Delete versioned data!';
+    protected string $title = 'CAREFUL: delete all versioned data';
 
-    public function run($request)
+    protected static string $description = 'Delete versioned data!';
+
+    protected function execute(InputInterface $input, PolyOutput $output): int
     {
         if (! Director::isLive()) {
             $rows = DB::query('SHOW TABLES;');
@@ -21,29 +26,32 @@ class DeleteAllVersionedData extends BuildTask
                 if ($row) {
                     if (is_array($row)) {
                         foreach ($row as $table) {
-                            $this->truncateTable($table);
+                            $this->truncateTable($output, $table);
                         }
                     } else {
                         $table = $row['table'] ?? '';
                         if ($table) {
-                            $this->truncateTable($table);
+                            $this->truncateTable($output, $table);
                         }
                     }
                 }
             }
-            FlushNowImplementor::do_flush('TRUNCATING ChangeSet');
+
+            $output->writeln('TRUNCATING ChangeSet');
             DB::query('TRUNCATE TABLE "ChangeSet";');
-            FlushNowImplementor::do_flush('TRUNCATING ChangeSetItem');
+            $output->writeln('TRUNCATING ChangeSetItem');
             DB::query('TRUNCATE TABLE "ChangeSetItem";');
         } else {
-            FlushNowImplementor::do_flush('You need to set the environment to TEST or DEV to run this task.');
+            $output->writeln('You need to set the environment to TEST or DEV to run this task.');
         }
+
+        return Command::SUCCESS;
     }
 
-    private function truncateTable(string $table)
+    private function truncateTable(PolyOutput $output, string $table): void
     {
         if ('_Versions' === substr($table, -1 * strlen('_Versions'))) {
-            FlushNowImplementor::do_flush('TRUNCATING ' . $table);
+            $output->writeln('TRUNCATING ' . $table);
             DB::query('TRUNCATE TABLE "' . $table . '";');
         }
     }
