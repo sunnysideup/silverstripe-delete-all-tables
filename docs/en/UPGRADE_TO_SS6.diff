@@ -1,0 +1,138 @@
+diff --git a/composer.json b/composer.json
+index faadf2f..e96a8d7 100644
+--- a/composer.json
++++ b/composer.json
+@@ -17,7 +17,7 @@
+     "drop table"
+   ],
+   "require": {
+-    "silverstripe/framework": "^4.0 || ^5.0"
++    "silverstripe/framework": "^6.0"
+   },
+   "minimum-stability": "dev",
+   "prefer-stable": true,
+diff --git a/src/DeleteAllTablesTask.php b/src/DeleteAllTablesTask.php
+index 4b4a6ba..8df6ae5 100644
+--- a/src/DeleteAllTablesTask.php
++++ b/src/DeleteAllTablesTask.php
+@@ -5,15 +5,20 @@ namespace Sunnysideup\DeleteAllTables;
+ use SilverStripe\Control\Director;
+ use SilverStripe\Dev\BuildTask;
+ use SilverStripe\ORM\DB;
++use SilverStripe\PolyExecution\PolyOutput;
+ use Sunnysideup\Flush\FlushNowImplementor;
++use Symfony\Component\Console\Command\Command;
++use Symfony\Component\Console\Input\InputInterface;
+ 
+ class DeleteAllTablesTask extends BuildTask
+ {
+-    protected $title = 'CAREFUL: delete all tables';
++    protected static string $commandName = 'delete-all-tables';
+ 
+-    protected $description = 'Delete all tables in the database - no backup - so please be super careful!';
++    protected string $title = 'CAREFUL: delete all tables';
+ 
+-    public function run($request)
++    protected static string $description = 'Delete all tables in the database - no backup - so please be super careful!';
++
++    protected function execute(InputInterface $input, PolyOutput $output): int
+     {
+         if (Director::isDev() || Director::is_cli()) {
+             $rows = DB::query('SHOW TABLES;');
+@@ -21,22 +26,24 @@ class DeleteAllTablesTask extends BuildTask
+                 if ($row) {
+                     if (is_array($row)) {
+                         foreach ($row as $table) {
+-                            $this->deleteTable($table);
++                            $this->deleteTable($output, $table);
+                         }
+                     } else {
+                         $table = $row['table'] ?? '';
+                         if ($table) {
+-                            $this->deleteTable($table);
++                            $this->deleteTable($output, $table);
+                         }
+                     }
+                 }
+             }
+         }
++
++        return Command::SUCCESS;
+     }
+ 
+-    private function deleteTable(string $table)
++    private function deleteTable(PolyOutput $output, string $table): void
+     {
+-        FlushNowImplementor::do_flush('DELETING ' . $table);
++        $output->writeln('DELETING ' . $table);
+         DB::query('DROP TABLE IF EXISTS "' . $table . '";');
+     }
+ }
+diff --git a/src/DeleteAllVersionedData.php b/src/DeleteAllVersionedData.php
+index e6fc383..4dde313 100644
+--- a/src/DeleteAllVersionedData.php
++++ b/src/DeleteAllVersionedData.php
+@@ -5,15 +5,20 @@ namespace Sunnysideup\DeleteAllTables;
+ use SilverStripe\Control\Director;
+ use SilverStripe\Dev\BuildTask;
+ use SilverStripe\ORM\DB;
++use SilverStripe\PolyExecution\PolyOutput;
+ use Sunnysideup\Flush\FlushNowImplementor;
++use Symfony\Component\Console\Command\Command;
++use Symfony\Component\Console\Input\InputInterface;
+ 
+ class DeleteAllVersionedData extends BuildTask
+ {
+-    protected $title = 'CAREFUL: delete all versioned data';
++    protected static string $commandName = 'delete-all-versioned-data';
+ 
+-    protected $description = 'Delete versioned data!';
++    protected string $title = 'CAREFUL: delete all versioned data';
+ 
+-    public function run($request)
++    protected static string $description = 'Delete versioned data!';
++
++    protected function execute(InputInterface $input, PolyOutput $output): int
+     {
+         if (! Director::isLive()) {
+             $rows = DB::query('SHOW TABLES;');
+@@ -21,30 +26,32 @@ class DeleteAllVersionedData extends BuildTask
+                 if ($row) {
+                     if (is_array($row)) {
+                         foreach ($row as $table) {
+-                            $this->truncateTable($table);
++                            $this->truncateTable($output, $table);
+                         }
+                     } else {
+                         $table = $row['table'] ?? '';
+                         if ($table) {
+-                            $this->truncateTable($table);
++                            $this->truncateTable($output, $table);
+                         }
+                     }
+                 }
+             }
+ 
+-            FlushNowImplementor::do_flush('TRUNCATING ChangeSet');
++            $output->writeln('TRUNCATING ChangeSet');
+             DB::query('TRUNCATE TABLE "ChangeSet";');
+-            FlushNowImplementor::do_flush('TRUNCATING ChangeSetItem');
++            $output->writeln('TRUNCATING ChangeSetItem');
+             DB::query('TRUNCATE TABLE "ChangeSetItem";');
+         } else {
+-            FlushNowImplementor::do_flush('You need to set the environment to TEST or DEV to run this task.');
++            $output->writeln('You need to set the environment to TEST or DEV to run this task.');
+         }
++
++        return Command::SUCCESS;
+     }
+ 
+-    private function truncateTable(string $table)
++    private function truncateTable(PolyOutput $output, string $table): void
+     {
+         if ('_Versions' === substr($table, -1 * strlen('_Versions'))) {
+-            FlushNowImplementor::do_flush('TRUNCATING ' . $table);
++            $output->writeln('TRUNCATING ' . $table);
+             DB::query('TRUNCATE TABLE "' . $table . '";');
+         }
+     }
