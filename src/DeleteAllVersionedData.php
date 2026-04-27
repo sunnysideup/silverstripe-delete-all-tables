@@ -31,6 +31,7 @@ class DeleteAllVersionedData extends BuildTask
                     }
                 }
             }
+
             FlushNowImplementor::do_flush('TRUNCATING ChangeSet');
             DB::query('TRUNCATE TABLE "ChangeSet";');
             FlushNowImplementor::do_flush('TRUNCATING ChangeSetItem');
