@@ -2,18 +2,21 @@
 
 namespace Sunnysideup\DeleteAllTables;
 
-use Symfony\Component\Console\Input\InputInterface;
-use SilverStripe\Console\PolyOutput;
 use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
+use SilverStripe\PolyExecution\PolyOutput;
 use Sunnysideup\Flush\FlushNowImplementor;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 
 class DeleteAllTablesTask extends BuildTask
 {
+    protected static string $commandName = 'delete-all-tables';
+
     protected string $title = 'CAREFUL: delete all tables';
 
-    protected $description = 'Delete all tables in the database - no backup - so please be super careful!';
+    protected static string $description = 'Delete all tables in the database - no backup - so please be super careful!';
 
     protected function execute(InputInterface $input, PolyOutput $output): int
     {
@@ -23,24 +26,24 @@ class DeleteAllTablesTask extends BuildTask
                 if ($row) {
                     if (is_array($row)) {
                         foreach ($row as $table) {
-                            $this->deleteTable($table);
+                            $this->deleteTable($output, $table);
                         }
                     } else {
                         $table = $row['table'] ?? '';
                         if ($table) {
-                            $this->deleteTable($table);
+                            $this->deleteTable($output, $table);
                         }
                     }
                 }
             }
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    private function deleteTable(string $table)
+    private function deleteTable(PolyOutput $output, string $table): void
     {
-        FlushNowImplementor::do_flush('DELETING ' . $table);
+        $output->writeln('DELETING ' . $table);
         DB::query('DROP TABLE IF EXISTS "' . $table . '";');
     }
 }
