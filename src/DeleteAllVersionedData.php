@@ -41,6 +41,7 @@ class DeleteAllVersionedData extends BuildTask
         } else {
             FlushNowImplementor::do_flush('You need to set the environment to TEST or DEV to run this task.');
         }
+
         return 0;
     }
 

@@ -34,6 +34,7 @@ class DeleteAllTablesTask extends BuildTask
                 }
             }
         }
+
         return 0;
     }
 
