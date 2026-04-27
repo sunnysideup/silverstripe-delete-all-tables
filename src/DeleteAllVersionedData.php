@@ -2,6 +2,8 @@
 
 namespace Sunnysideup\DeleteAllTables;
 
+use Symfony\Component\Console\Input\InputInterface;
+use SilverStripe\Console\PolyOutput;
 use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
@@ -9,11 +11,11 @@ use Sunnysideup\Flush\FlushNowImplementor;
 
 class DeleteAllVersionedData extends BuildTask
 {
-    protected $title = 'CAREFUL: delete all versioned data';
+    protected string $title = 'CAREFUL: delete all versioned data';
 
     protected $description = 'Delete versioned data!';
 
-    public function run($request)
+    protected function execute(InputInterface $input, PolyOutput $output): int
     {
         if (! Director::isLive()) {
             $rows = DB::query('SHOW TABLES;');
@@ -39,6 +41,7 @@ class DeleteAllVersionedData extends BuildTask
         } else {
             FlushNowImplementor::do_flush('You need to set the environment to TEST or DEV to run this task.');
         }
+        return 0;
     }
 
     private function truncateTable(string $table)

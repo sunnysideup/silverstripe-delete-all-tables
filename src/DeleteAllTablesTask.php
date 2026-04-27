@@ -2,6 +2,8 @@
 
 namespace Sunnysideup\DeleteAllTables;
 
+use Symfony\Component\Console\Input\InputInterface;
+use SilverStripe\Console\PolyOutput;
 use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
@@ -9,11 +11,11 @@ use Sunnysideup\Flush\FlushNowImplementor;
 
 class DeleteAllTablesTask extends BuildTask
 {
-    protected $title = 'CAREFUL: delete all tables';
+    protected string $title = 'CAREFUL: delete all tables';
 
     protected $description = 'Delete all tables in the database - no backup - so please be super careful!';
 
-    public function run($request)
+    protected function execute(InputInterface $input, PolyOutput $output): int
     {
         if (Director::isDev() || Director::is_cli()) {
             $rows = DB::query('SHOW TABLES;');
@@ -32,6 +34,7 @@ class DeleteAllTablesTask extends BuildTask
                 }
             }
         }
+        return 0;
     }
 
     private function deleteTable(string $table)
