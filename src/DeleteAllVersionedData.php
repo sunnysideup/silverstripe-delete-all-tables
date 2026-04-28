@@ -6,7 +6,6 @@ use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
 use SilverStripe\PolyExecution\PolyOutput;
-use Sunnysideup\Flush\FlushNowImplementor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 
