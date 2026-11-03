@@ -15,6 +15,12 @@ class DeleteAllVersionedData extends BuildTask
 
     public function run($request)
     {
+        if (! Director::is_cli()) {
+            echo 'This task can only be run on the command line.';
+
+            return;
+        }
+
         if (! Director::isLive()) {
             $rows = DB::query('SHOW TABLES;');
             foreach ($rows as $row) {

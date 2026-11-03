@@ -15,6 +15,12 @@ class DeleteAllTablesTask extends BuildTask
 
     public function run($request)
     {
+        if (! Director::is_cli()) {
+            echo 'This task can only be run on the command line.';
+
+            return;
+        }
+
         if (Director::isDev() || Director::is_cli()) {
             $rows = DB::query('SHOW TABLES;');
             foreach ($rows as $row) {
