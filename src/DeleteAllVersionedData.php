@@ -19,6 +19,12 @@ class DeleteAllVersionedData extends BuildTask
 
     protected function execute(InputInterface $input, PolyOutput $output): int
     {
+        if (! Director::is_cli()) {
+            $output->writeln('This task can only be run on the command line.');
+
+            return Command::FAILURE;
+        }
+
         if (! Director::isLive()) {
             $rows = DB::query('SHOW TABLES;');
             foreach ($rows as $row) {
